@@ -163,7 +163,6 @@
         }
 
         @media (max-width: 700px) {
-
             .container {
                 padding: 12px;
             }
@@ -267,12 +266,10 @@
 
 <script>
 
-    // Latest working Google Apps Script URL
     const webAppUrl =
         'https://script.google.com/macros/s/AKfycbyOjynBVlud-RiWjYDq8N15tx5nGvHdtrlgC7GAB8xn5BUn0hIYpFHoLBuKdBugk-2y/exec';
 
 
-    // Prevent overlapping requests
     let isLoading = false;
 
 
@@ -325,7 +322,6 @@
 
     function loadData(manualRefresh = false) {
 
-        // Don't start another request while one is running
         if (isLoading) {
             return;
         }
@@ -336,13 +332,15 @@
         const button =
             document.getElementById('refresh-button');
 
+
         if (manualRefresh) {
+
             button.disabled = true;
             button.textContent = 'Refreshing...';
+
         }
 
 
-        // Cache-busting timestamp
         const url =
             webAppUrl +
             '?t=' +
@@ -497,11 +495,9 @@
     }
 
 
-    // Initial load
     loadData();
 
 
-    // Automatically refresh every 60 seconds
     setInterval(
         function() {
             loadData(false);
