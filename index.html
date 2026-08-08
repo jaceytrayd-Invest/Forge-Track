@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JaceyForge - Student Holdings Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #1a73e8;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        th {
+            background-color: #1a73e8;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fbff;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>JaceyForge - Student Holdings Dashboard</h2>
+    <div class="subtitle">Live data synced from <a href="https://docs.google.com/spreadsheets/d/1enYLNdMR9TMpVekoqKZaHxZfrDrk4drr_JZ5IH9sl-I/edit?gid=0#gid=0" target="_blank">JaceyForge-Student Holdings</a></div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Ticker</th>
+                <th class="text-right">Price (₹)</th>
+                <th class="text-right">Buy Price (₹)</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Sell Price (₹)</th>
+                <th class="text-right">Sell Qty</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <tr><td colspan="7" class="loading">Connecting to Google Sheets backend...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbzpwVmcVmRnPRIpoW2nQuONqiHdj98MhWSwxtMAqNL8gS7MSBBeHb3fzsJrw2SkQDU/exec';
+
+    fetch(webAppUrl)
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = ''; 
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.Student || ''}</td>
+                    <td><strong>${row.ticker || ''}</strong></td>
+                    <td class="text-right">${row.price ? Number(row.price).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-'}</td>
+                    <td class="text-right">${row['Buy Price'] ? row['Buy Price'] : '-'}</td>
+                    <td class="text-right">${row.Qty || '-'}</td>
+                    <td class="text-right">${row.sellprice || '-'}</td>
+                    <td class="text-right">${row['sell qty'] || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching portfolio data:', error);
+            document.getElementById('table-body').innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Failed to load live data from Apps Script. Check deployment access settings.</td></tr>`;
+        });
+</script>
+
+</body>
+</html>
